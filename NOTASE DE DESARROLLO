@@ -1,0 +1,17 @@
+EXPRESS 
+npm install express
+
+SQL
+npm install mysql2
+
+Protecion variables:
+npm install dotenv
+
+NODEMON
+npm install  nodemon -D
+
+bcrypt
+npm install bcrypt
+
+UUID
+npm install uuid
