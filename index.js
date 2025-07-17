@@ -4,6 +4,7 @@ import BD from './BD.js';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import transporter from './correo.js';
 
 BD.connect();
 
@@ -103,7 +104,7 @@ app.post('/api/registro', async (req, res) => {
 app.get('/api/citas', (req, res) => {
   const selectCitas = `SELECT 
   u.nombre, u.apellidos, u.usuario,
-  c.correo, c.telefono,
+  c.correo, c.telefono,ci.id,
   ci.fecha, ci.hora
 FROM usuarios u
 JOIN contactos c ON u.id = c.usuario_id
@@ -115,9 +116,55 @@ JOIN citas ci ON u.id = ci.usuario_id;
       return res.status(500).json({ error: 'Error al obtener citas' });
     }
     res.json(result);
-    
-    
+        
+  });
+});
+
+//eliminar
+app.delete('/api/citas/eliminar', (req, res) => {
+  const { id } = req.body;
+  
+  const deleteCita = `DELETE FROM citas WHERE id = ?`;
+  BD.query(deleteCita, [id], (err, result) => {
+    if (err) {
+      console.error('❌ Error al eliminar cita:', err);
+      return res.status(500).json({ error: 'Error al eliminar cita' });
+    }
+    res.json({ mensaje: 'Cita eliminada exitosamente ✅' });
+  });
+});
+
+//actualizar
+app.put('/api/citas/actualizar', (req, res) => {
+  const { id } = req.body;
+  
+  const updateCita = `UPDATE citas SET fecha = ?, hora = ? WHERE id = ?`;
+  BD.query(updateCita, [id], (err, result) => {
+    if (err) {
+      console.error('❌ Error al actualizar cita:', err);
+      return res.status(500).json({ error: 'Error al actualizar cita' });
+    }
+    res.json({ mensaje: 'Cita actualizada exitosamente ✅' });
   });
 });
 
 
+//enviar correo
+app.post('/api/enviarCorreo', (req, res) => {
+  const { correo } = req.body;
+  
+  const mailOptions = {
+    from: process.env.correoUser,
+    to: correo,
+    subject: 'Asunto del correo pruebas ',
+    text: 'Contenido del mensaje',
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.error('❌ Error al enviar correo:', error);
+    }
+    console.log('✅ Correo enviado:', info.response);
+    res.json({ mensaje: 'Correo enviado exitosamente ✅' });
+  });
+});

@@ -15,3 +15,6 @@ npm install bcrypt
 
 UUID
 npm install uuid
+
+NODEMAILER
+npm install nodemailer
