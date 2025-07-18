@@ -19,5 +19,4 @@ npm install uuid
 NODEMAILER
 npm install nodemailer
 
-AXIOS
-npm install axios
+
