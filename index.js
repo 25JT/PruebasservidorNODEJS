@@ -70,7 +70,7 @@ app.post('/api/registro', async (req, res) => {
     res.json({ mensaje: 'Registro completo exitoso ✅' });
   } catch (err) {
     console.error('❌ Error general:', err);
-    res.status(500).json({ error: 'Error en el servidor' });
+    res.status(500).json({ error: 'Error usuario duplicado' });
   }
 });
 
